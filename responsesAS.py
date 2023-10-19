@@ -4,10 +4,10 @@
 #   Purpose:        Skeleton info of implementing bot response messages
 #======================================================================
 
-def handle_response(message) -> str:
+def get_response(message: str) -> str:
     # Parse all input as lowercase variant
     p_message = message.lower()
 
-    if (p_message == 'Message to respond to'):
+    if p_message == '!ping':
         # Perform appropriate reaction
-        return 'Here is a filler response, as a message.'
+        return 'Pong!'
