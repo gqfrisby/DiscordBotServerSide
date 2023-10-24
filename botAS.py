@@ -6,6 +6,9 @@
 
 import discord
 import responsesAS
+import random
+from discord.ext import commands
+from discord import Intents
 
 # TODO: Use .env file to pull in TOKEN, other environment variables instead of hardcoding into source
 # import os
