@@ -27,6 +27,8 @@ from discord import Intents
 ### async def {API event}(args)
 ###     event code
 
+#initializes the bot
+bot = commands.Bot(command_prefix='!', intents=intents)
 
 # RUNNING THE BOT
 def run_discord_bot():
@@ -149,6 +151,34 @@ def run_discord_bot():
             else:
                 print("Test2")
                 print(f"{role} not found.")
+
+  @bot.event
+  async def on_ready():
+    print(f'Logged in as {bot.user.name}')
+
+
+# Use command !roll 1d10 to get a random number 1-10 etc, this can be used all the way up too 1d100
+  @bot.command()
+  async def roll(ctx, dice):
+    try:
+        rolls, sides = map(int, dice.split('d'))
+        results = [random.randint(1, sides) for _ in range(rolls)]
+        await ctx.send(f"{ctx.author.mention} rolled {rolls}d{sides}: {', '.join(map(str, results))}")
+
+    except Exception as e:
+        await ctx.send("Invalid input. Use !roll (rolls)d(sides) format, e.g., !roll 1d20")
+
+
+#use command !dnd_5e classes bard to generate a link to the dndbeyond website and will pull up the bard class. this can be used for all classes
+  @bot.command()
+  async def dnd_5e(ctx, category, *values):
+    dnd_url = "https://www.dndbeyond.com/"
+    if category == "classes":
+        dnd_url += "/classes"
+        if values:
+            dnd_url += "/" + "/".join(values)
+
+    await ctx.send(dnd_url)
 
     # Logs in bot in Discord - green dot in Discord => bot is running
     client.run(TOKEN)
