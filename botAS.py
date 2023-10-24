@@ -7,6 +7,7 @@
 import discord
 import responsesAS
 
+roleReactID = 1164430733817954315
 # TODO: Use .env file to pull in TOKEN, other environment variables instead of hardcoding into source
 # import os
 # from dotenv import load_dotenv
@@ -28,7 +29,7 @@ import responsesAS
 # RUNNING THE BOT
 def run_discord_bot():
     # Establish bot instance using token; get client
-    TOKEN = 'MTE2MTM3NTcwMTg0NTQyMjExMQ.GnVplh.S5N60SV8uDNOZA3osmJouzkxU6r1aT3B-yuejY'
+    TOKEN = 'MTE2NjQ0MzMzNTcyMDg5NDU1NQ.GTrsEp.isE9pztmOex9T11jSfdnEP-bOEKYSK0uNZXzcA'
     # TOKEN = os.getenv('TOKEN')
     intents = discord.Intents.default()
     intents.message_content = True
@@ -74,7 +75,7 @@ def run_discord_bot():
         # payload variable contains properties that identify
         # individual messages
         message_id = payload.message_id
-        if message_id == 1164430733817954315: # placeholder, Needs to be updated when added to any server
+        if message_id == roleReactID: # placeholder, Needs to be updated when added to any server
             # message ID should be copied from message in existing channel
             # i.e. when a user reacts to MESSAGE_ID message, then...
             guild_id = payload.guild_id
@@ -112,7 +113,7 @@ def run_discord_bot():
         # payload variable contains properties that identify
         # individual messages
         message_id = payload.message_id
-        if message_id == 1164446737520406538: # placeholder
+        if message_id == roleReactID: # placeholder
             # message ID should be copied from message in existing channel
             # i.e. when a user reacts to MESSAGE_ID message, then...
             guild_id = payload.guild_id
