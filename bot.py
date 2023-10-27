@@ -1,15 +1,16 @@
 # =================================================================
-#   Author:         Aaron Shingleton
-#   Last Modified:  10/12/2023
-#   Purpose:        Skeleton template of a discord bot
+#   Author:         Noah Cole, Gavin Frisby, Aaron Shingleton
+#   Last Modified:  10/27/2023
+#   Purpose:        Discord Bot main functionality - aggregated
 # =================================================================
+import time
 
 import discord
 from discord import app_commands
-import responsesAS
+import datetime
 import random
-from discord.ext import commands
-from discord import Intents
+
+import responses
 
 # EVENT SYNTAX
 # @client.event
@@ -22,11 +23,11 @@ from discord import Intents
 # async def myCommand(interactionVariable = discord.Interaction, arg1?: type, arg2?...)
 
 # initializes the bot
-TOKEN = ''
+TOKEN = 'MTE2NjQ0MzMzNTcyMDg5NDU1NQ.Gb8KoO.o7jwDEMK6wM_0i4ju8mY6k_Uc58NcJ7szPb4s4'
 intents = discord.Intents.default()
 intents.message_content = True
 
-
+# See https://youtu.be/PgN9U1wBTAg?t=60
 class aclient(discord.Client):
     def __init__(self):
         super().__init__(intents=intents)
@@ -39,8 +40,11 @@ class aclient(discord.Client):
                 id=1164402314468139028))  # guild specific: leave blank if global (global registration can take 1-24 hours)
             self.synced = True
         print(f"We have logged in as {self.user}.")
+        global start_time
+        start_time = datetime.datetime.now(datetime.timezone.utc)
 
 
+# See https://youtu.be/PgN9U1wBTAg?t=60
 client = aclient()
 tree = app_commands.CommandTree(client)
 
@@ -48,7 +52,7 @@ tree = app_commands.CommandTree(client)
 @client.event
 async def send_message(message, user_message, is_private):
     try:
-        response = responsesAS.get_response(user_message)
+        response = responses.get_response(user_message)
         if response is not None:
             await message.author.send(response) if is_private else await message.channel.send(response)
 
@@ -158,18 +162,20 @@ async def on_raw_reaction_remove(payload):
             print(f"{role} not found.")
 
 
-@tree.command(guild = discord.Object(id=1164402314468139028), name='roll', description='Rolls dice using text')
-@app_commands.describe(dice = "1d20 = one 20-sided die roll")
+@tree.command(guild=discord.Object(id=1164402314468139028), name='roll', description='Rolls dice using text')
+@app_commands.describe(dice="1d20 = one 20-sided die roll")
 async def do_roll(ctx: discord.Interaction, dice: str = "1d20"):
     try:
         rolls, sides = map(int, dice.split('d'))
         print(f"Rolls: {rolls}    Sides: {sides}")
         print(f"{ctx.user.display_name}")
         results = [random.randint(1, sides) for _ in range(rolls)]
-        await ctx.response.send_message(f"{ctx.user.display_name} rolled {rolls}d{sides}: {', '.join(map(str, results))}")
+        await ctx.response.send_message(
+            f"{ctx.user.display_name} rolled {rolls}d{sides}: {', '.join(map(str, results))}")
 
     except Exception as e:
         await ctx.response.send_message("Invalid input. Use !roll (rolls)d(sides) format, e.g., !roll 1d20")
+
 
 @tree.command(name="dnd5e", description="Provides link to DnDBeyond reference webpage",
               guild=discord.Object(id=1164402314468139028))
@@ -181,5 +187,21 @@ async def dnd_ref(interaction: discord.Interaction, category: str = "", values: 
             dnd_url += f"{values}"
 
     await interaction.response.send_message(dnd_url)
+
+
+@tree.command(name="uptime", description="Displays how long the bot has been running", guild=discord.Object(id=1164402314468139028))
+async def uptime(interaction: discord.Interaction):
+    current_time = datetime.datetime.now(datetime.timezone.utc)
+    uptime_duration = current_time - start_time
+    uptime_duration = uptime_duration.total_seconds()
+
+    # see https://stackoverflow.com/a/47207182
+    days = divmod(uptime_duration, 86400)  # Get days (without [0]!)
+    hours = divmod(days[1], 3600)  # Use remainder of days to calc hours
+    minutes = divmod(hours[1], 60)  # Use remainder of hours to calc minutes
+    seconds = divmod(minutes[1], 1)  # Use remainder of minutes to calc seconds
+
+    await interaction.response.send_message("Uptime: %d days, %d hours, %d minutes and %d seconds" % (days[0], hours[0], minutes[0], seconds[0]))
+
 
 client.run(TOKEN)
