@@ -11,3 +11,5 @@ def get_response(message: str) -> str:
     if p_message == '!ping':
         # Perform appropriate reaction
         return 'Pong!'
+    else:
+        return None
