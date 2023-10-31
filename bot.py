@@ -23,7 +23,7 @@ import responses
 # async def myCommand(interactionVariable = discord.Interaction, arg1?: type, arg2?...)
 
 # initializes the bot
-TOKEN = 'MTE2NjQ0MzMzNTcyMDg5NDU1NQ.Gb8KoO.o7jwDEMK6wM_0i4ju8mY6k_Uc58NcJ7szPb4s4'
+TOKEN = 'MTE2NjQ0MzMzNTcyMDg5NDU1NQ.G_IIQY.jJvlAEgfatlTKweIxzf2SyVJm2FPcmkww52NzA'
 intents = discord.Intents.default()
 intents.message_content = True
 
@@ -80,56 +80,19 @@ async def on_message(message):
 
     # EMOJI REACTION EVENT
     ### SEE https://www.youtube.com/watch?v=MgCJG8kkq50
-    @client.event
-    async def on_raw_reaction_add(payload):
-        # payload variable contains properties that identify
-        # individual messages
-        message_id = payload.message_id
-        if message_id == 1164430733817954315:  # placeholder, Needs to be updated when added to any server
-            # message ID should be copied from message in existing channel
-            # i.e. when a user reacts to MESSAGE_ID message, then...
-            guild_id = payload.guild_id
-            guild = discord.utils.find(lambda g: g.id == payload.guild_id, client.guilds)
-
-            # Branches for specific emoji
-            if payload.emoji.name == 'ComputerScience':  # :placeholder:
-                role = discord.utils.get(guild.roles,
-                                         name="Computer Science")  # Name of role | if role's name == emoji's name, then no need to check
-            elif payload.emoji.name == 'CyberSecurity':
-                role = discord.utils.get(guild.roles, name="Cyber Security")
-            elif payload.emoji.name == 'InformationSystems':
-                role = discord.utils.get(guild.roles, name="Information Systems")
-            elif payload.emoji.name == 'InformationTechnology':
-                role = discord.utils.get(guild.roles, name="Information Technology")
-            elif payload.emoji.name == 'Alumni':
-                role = discord.utils.get(guild.roles, name="Alumni")
-            elif payload.emoji.name == 'GradSchool':
-                role = discord.utils.get(guild.roles, name="Grad-School")
-            # Catch-all statement for assigning role when role's name matches the emoji's name
-            else:
-                role = discord.utils.get(guild.roles, name=payload.emoji.name)
-
-            # ASSIGNING ROLE
-            if role is not None:
-                member = await (await client.fetch_guild(payload.guild_id)).fetch_member(payload.user_id)
-                if member is not None:
-                    await member.add_roles(role)
-                else:
-                    print(f"{member} not found.")
-            else:
-                print(f"{role} not found.")
-
-
 @client.event
-async def on_raw_reaction_remove(payload):
+async def on_raw_reaction_add(payload):
+    print(f'OnRawReactionAdd')
+    print(f'{payload.message_id} is the message ID')
     # payload variable contains properties that identify
     # individual messages
     message_id = payload.message_id
-    if message_id == 1164446737520406538:  # placeholder
+    if message_id == 1168987560270376960:  # placeholder
         # message ID should be copied from message in existing channel
         # i.e. when a user reacts to MESSAGE_ID message, then...
         guild_id = payload.guild_id
         guild = discord.utils.find(lambda g: g.id == payload.guild_id, client.guilds)
+        print(f'Added reaction in {guild.name} with guild ID {guild_id} using emoji {payload.emoji.name}.')
 
         # Branches for specific emoji
         if payload.emoji.name == 'ComputerScience':  # :placeholder:
@@ -151,14 +114,61 @@ async def on_raw_reaction_remove(payload):
 
         # ASSIGNING ROLE
         if role is not None:
+            print(f'Role to add is {role.name}.')
+            member = await (await client.fetch_guild(payload.guild_id)).fetch_member(payload.user_id)
+            if member is not None:
+                await member.add_roles(role)
+            else:
+                print("Role Reaction Add : Bad member get")
+                print(f"{member} not found.")
+        else:
+            print("Role Reaction Add : Invalid Role")
+            print(f"{role} not found.")
+
+
+@client.event
+async def on_raw_reaction_remove(payload):
+    print(f'Reaction removal was logged.')
+    print(f'{payload.message_id} is the message ID')
+    # payload variable contains properties that identify
+    # individual messages
+    message_id = payload.message_id
+    if message_id == 1168987560270376960:  # placeholder
+        # message ID should be copied from message in existing channel
+        # i.e. when a user reacts to MESSAGE_ID message, then...
+        guild_id = payload.guild_id
+        guild = discord.utils.find(lambda g: g.id == payload.guild_id, client.guilds)
+        print(f'Removed reaction in {guild.name} with guild ID {guild_id} using emoji {payload.emoji.name}.')
+
+        # Branches for specific emoji
+        if payload.emoji.name == 'ComputerScience':  # :placeholder:
+            role = discord.utils.get(guild.roles,
+                                     name="Computer Science")  # Name of role | if role's name == emoji's name, then no need to check
+        elif payload.emoji.name == 'CyberSecurity':
+            role = discord.utils.get(guild.roles, name="Cyber Security")
+        elif payload.emoji.name == 'InformationSystems':
+            role = discord.utils.get(guild.roles, name="Information Systems")
+        elif payload.emoji.name == 'InformationTechnology':
+            role = discord.utils.get(guild.roles, name="Information Technology")
+        elif payload.emoji.name == 'Alumni':
+            role = discord.utils.get(guild.roles, name="Alumni")
+        elif payload.emoji.name == 'GradSchool':
+            role = discord.utils.get(guild.roles, name="Grad-School")
+        # Catch-all statement for assigning role when role's name matches the emoji's name
+        else:
+            role = discord.utils.get(guild.roles, name=payload.emoji.name)
+
+        # ASSIGNING ROLE
+        if role is not None:
+            print(f'Role to remove is {role.name}.')
             member = await (await client.fetch_guild(payload.guild_id)).fetch_member(payload.user_id)
             if member is not None:
                 await member.remove_roles(role)
             else:
-                print("Test1")
+                print("Role Reaction Removal : Bad member get")
                 print(f"{member} not found.")
         else:
-            print("Test2")
+            print("Role Reaction Removal : Invalid Role")
             print(f"{role} not found.")
 
 
